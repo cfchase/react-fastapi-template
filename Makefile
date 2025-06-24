@@ -77,11 +77,11 @@ deploy-prod: ## Deploy to production environment
 
 undeploy-dev: ## Remove development deployment
 	@echo "Removing development deployment..."
-	kustomize build k8s/overlays/dev | oc delete -f - || true
+	./scripts/undeploy.sh dev
 
 undeploy-prod: ## Remove production deployment
 	@echo "Removing production deployment..."
-	kustomize build k8s/overlays/prod | oc delete -f - || true
+	./scripts/undeploy.sh prod
 
 # Environment Setup
 env-setup: ## Copy environment example files
