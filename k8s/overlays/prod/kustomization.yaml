@@ -6,8 +6,6 @@ resources:
 
 namespace: react-fastapi-prod
 
-namePrefix: prod-
-
 commonLabels:
   environment: production
 
@@ -22,6 +20,6 @@ replicas:
 
 images:
   - name: quay.io/cfchase/react-fastapi-backend
-    newTag: v1.0.0
+    newTag: prod
   - name: quay.io/cfchase/react-fastapi-frontend
-    newTag: v1.0.0
+    newTag: prod

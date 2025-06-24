@@ -6,8 +6,6 @@ resources:
 
 namespace: react-fastapi-dev
 
-namePrefix: dev-
-
 commonLabels:
   environment: development
 
@@ -16,6 +14,6 @@ patchesStrategicMerge:
 
 images:
   - name: quay.io/cfchase/react-fastapi-backend
-    newTag: dev
+    newTag: latest
   - name: quay.io/cfchase/react-fastapi-frontend
-    newTag: dev
+    newTag: latest

@@ -15,11 +15,11 @@ echo "Registry: $REGISTRY"
 
 # Build backend image
 echo "Building backend image..."
-docker build -t "${REGISTRY}/${PROJECT_NAME}-backend:${TAG}" ./backend
+docker build --platform linux/amd64 -t "${REGISTRY}/${PROJECT_NAME}-backend:${TAG}" ./backend
 
 # Build frontend image
 echo "Building frontend image..."
-docker build -t "${REGISTRY}/${PROJECT_NAME}-frontend:${TAG}" ./frontend
+docker build --platform linux/amd64 -t "${REGISTRY}/${PROJECT_NAME}-frontend:${TAG}" ./frontend
 
 echo "Images built successfully!"
 echo "Backend: ${REGISTRY}/${PROJECT_NAME}-backend:${TAG}"

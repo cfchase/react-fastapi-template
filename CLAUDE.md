@@ -47,15 +47,26 @@ make lint             # Run linting
 
 ### Container Registry (Quay.io)
 ```bash
-make build                           # Build frontend and container images
-make push                            # Push images only
-make build TAG=v1.0.0                # Build with specific tag
-make push TAG=v1.0.0                 # Push with specific tag
+make build                           # Build frontend and container images (default: latest)
+make push                            # Push images only (default: latest)
+make build TAG=latest                # Build with latest tag (explicit)
+make push TAG=latest                 # Push with latest tag (explicit)
+make build TAG=prod                  # Build with prod tag (required for prod deployment)
+make push TAG=prod                   # Push with prod tag
 make TAG=v1.0.0 REGISTRY=quay.io/cfchase # Custom registry and tag
 ```
 
+**Important**: The k8s overlays expect specific image tags:
+- Development environment uses `latest` tag (default)
+- Production environment requires `prod` tag
+
 ### OpenShift Deployment
 ```bash
+# First build and push images with correct tags
+make build && make push                     # For development (uses latest tag)
+make build TAG=prod && make push TAG=prod  # For production
+
+# Then deploy
 make deploy-dev       # Deploy to development
 make deploy-prod      # Deploy to production
 make undeploy-dev     # Remove development deployment

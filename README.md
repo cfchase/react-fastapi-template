@@ -84,23 +84,40 @@ make build
 Build and push to quay.io:
 
 ```bash
-# Build frontend and container images
+# Build frontend and container images (default tag: latest)
 make build
+
+# Build with specific tag for production environment
+make build TAG=prod
 
 # Build with specific tag and registry
 make build TAG=v1.0.0 REGISTRY=quay.io/cfchase
 
-# Push images (must build first)
-make push TAG=v1.0.0
+# Push images (must build first, default tag: latest)
+make push
 
-# Build and push (two steps)
-make build TAG=v1.0.0
-make push TAG=v1.0.0
+# Build and push for development deployment (default)
+make build
+make push
 
-# Alternative script usage
-./scripts/build-images.sh v1.0.0 quay.io/cfchase
-./scripts/push-images.sh v1.0.0 quay.io/cfchase
+# Build and push for production deployment
+make build TAG=prod
+make push TAG=prod
+
+# Alternative script usage (defaults to latest tag)
+./scripts/build-images.sh
+./scripts/push-images.sh
+
+# Or with specific tag
+./scripts/build-images.sh prod quay.io/cfchase
+./scripts/push-images.sh prod quay.io/cfchase
 ```
+
+**Important**: The k8s overlays expect specific image tags:
+- Development: `latest` tag (default)
+- Production: `prod` tag
+
+Make sure to build and push with the correct tag before deploying.
 
 ### OpenShift Deployment
 
@@ -109,19 +126,30 @@ make push TAG=v1.0.0
    oc login --server=https://your-openshift-cluster
    ```
 
-2. **Deploy to development**:
+2. **Build and Push Images**:
+   ```bash
+   # For development (uses latest tag by default)
+   make build
+   make push
+   
+   # For production
+   make build TAG=prod
+   make push TAG=prod
+   ```
+
+3. **Deploy to development**:
    ```bash
    make deploy-dev
    # or: ./scripts/deploy.sh dev
    ```
 
-3. **Deploy to production**:
+4. **Deploy to production**:
    ```bash
    make deploy-prod
    # or: ./scripts/deploy.sh prod
    ```
 
-4. **Preview deployments**:
+5. **Preview deployments**:
    ```bash
    make kustomize-dev   # Preview dev manifests
    make kustomize-prod  # Preview prod manifests
