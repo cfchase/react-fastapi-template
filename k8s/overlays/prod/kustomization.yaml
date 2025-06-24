@@ -1,0 +1,27 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+
+namespace: react-fastapi-prod
+
+namePrefix: prod-
+
+commonLabels:
+  environment: production
+
+patchesStrategicMerge:
+  - deployment-patch.yaml
+
+replicas:
+  - name: backend
+    count: 3
+  - name: frontend
+    count: 2
+
+images:
+  - name: quay.io/your-org/react-fastapi-backend
+    newTag: v1.0.0
+  - name: quay.io/your-org/react-fastapi-frontend
+    newTag: v1.0.0
