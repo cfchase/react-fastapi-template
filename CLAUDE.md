@@ -34,32 +34,32 @@ make dev-backend      # Run FastAPI server (port 8000)
 make help             # Show all available commands
 ```
 
-### Docker Development
+### Building
 ```bash
-make docker-build     # Build all containers
-make docker-up       # Start all services
-make docker-down     # Stop all services
-make docker-logs     # View container logs
+make build                 # Build frontend and container images
 ```
 
-### Building and Testing
+### Testing
 ```bash
-make build            # Build frontend for production
 make test             # Run frontend tests
 make lint             # Run linting
 ```
 
 ### Container Registry (Quay.io)
 ```bash
-make build-images                    # Build and push with defaults
-make build-images TAG=v1.0.0        # Build and push with specific tag
-make TAG=v1.0.0 REGISTRY=quay.io/org # Custom registry and tag
+make build                           # Build frontend and container images
+make push                            # Push images only
+make build TAG=v1.0.0                # Build with specific tag
+make push TAG=v1.0.0                 # Push with specific tag
+make TAG=v1.0.0 REGISTRY=quay.io/cfchase # Custom registry and tag
 ```
 
 ### OpenShift Deployment
 ```bash
 make deploy-dev       # Deploy to development
 make deploy-prod      # Deploy to production
+make undeploy-dev     # Remove development deployment
+make undeploy-prod    # Remove production deployment
 make kustomize-dev    # Preview dev manifests
 make kustomize-prod   # Preview prod manifests
 ```
@@ -86,6 +86,7 @@ make kustomize-prod   # Preview prod manifests
 - Kustomize for environment-specific configuration
 - Separate dev and prod overlays
 - Quay.io as container registry
+- OpenShift Security Context Constraints (SCC) compatible
 
 ## Configuration Files
 
@@ -108,10 +109,10 @@ The FastAPI backend provides:
 ## Development Workflow
 
 1. Make changes to frontend (React) or backend (FastAPI)
-2. Test locally with `npm run dev`
-3. Test with containers using `npm run docker:up`
-4. Build and push containers with `./scripts/build-and-push.sh`
-5. Deploy to OpenShift with `./scripts/deploy.sh [env]`
+2. Test locally with `make dev`
+3. Build everything with `make build`
+4. Build and push containers with `make build && make push`
+5. Deploy to OpenShift with `make deploy-dev` or `make deploy-prod`
 
 ## Common Tasks
 

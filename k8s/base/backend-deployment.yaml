@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: quay.io/your-org/react-fastapi-backend:latest
+        image: quay.io/cfchase/react-fastapi-backend:latest
         ports:
         - containerPort: 8000
         env:
@@ -48,7 +48,6 @@ spec:
         securityContext:
           allowPrivilegeEscalation: false
           runAsNonRoot: true
-          runAsUser: 1001
           capabilities:
             drop:
             - ALL

@@ -15,7 +15,7 @@ A full-stack application template with React frontend (Vite) and FastAPI backend
 
 ### Prerequisites
 
-- Node.js 18+
+- Node.js 22+
 - Python 3.11+
 - Docker
 - OpenShift CLI (`oc`)
@@ -45,21 +45,11 @@ A full-stack application template with React frontend (Vite) and FastAPI backend
    npm run dev:backend npm run dev:frontend
    ```
 
-### Docker Development
+### Building
 
 ```bash
-# Build and run with Docker Compose
-make docker-build
-make docker-up
-
-# View logs
-make docker-logs
-
-# Stop services
-make docker-down
-
-# Alternative npm commands
-npm run docker:build npm run docker:up npm run docker:logs npm run docker:down
+# Build frontend and container images
+make build
 ```
 
 ## Project Structure
@@ -94,17 +84,22 @@ npm run docker:build npm run docker:up npm run docker:logs npm run docker:down
 Build and push to quay.io:
 
 ```bash
-# Build and push with default tag
-make build-images
+# Build frontend and container images
+make build
 
-# Build and push with specific tag  
-make build-images TAG=v1.0.0
+# Build with specific tag and registry
+make build TAG=v1.0.0 REGISTRY=quay.io/cfchase
 
-# Use different registry
-make build-images TAG=v1.0.0 REGISTRY=quay.io/myorg
+# Push images (must build first)
+make push TAG=v1.0.0
+
+# Build and push (two steps)
+make build TAG=v1.0.0
+make push TAG=v1.0.0
 
 # Alternative script usage
-./scripts/build-and-push.sh v1.0.0 quay.io/myorg
+./scripts/build-images.sh v1.0.0 quay.io/cfchase
+./scripts/push-images.sh v1.0.0 quay.io/cfchase
 ```
 
 ### OpenShift Deployment
@@ -130,6 +125,12 @@ make build-images TAG=v1.0.0 REGISTRY=quay.io/myorg
    ```bash
    make kustomize-dev   # Preview dev manifests
    make kustomize-prod  # Preview prod manifests
+   ```
+
+5. **Remove deployments**:
+   ```bash
+   make undeploy-dev    # Remove development deployment
+   make undeploy-prod   # Remove production deployment
    ```
 
 ## Configuration

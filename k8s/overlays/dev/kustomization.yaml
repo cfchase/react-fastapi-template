@@ -15,7 +15,7 @@ patchesStrategicMerge:
   - deployment-patch.yaml
 
 images:
-  - name: quay.io/your-org/react-fastapi-backend
+  - name: quay.io/cfchase/react-fastapi-backend
     newTag: dev
-  - name: quay.io/your-org/react-fastapi-frontend
+  - name: quay.io/cfchase/react-fastapi-frontend
     newTag: dev

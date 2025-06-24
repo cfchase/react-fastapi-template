@@ -1,11 +1,11 @@
 # Build stage
-FROM node:18-alpine AS build
+FROM node:22-alpine AS build
 
 WORKDIR /app
 
 # Copy package files
 COPY package*.json ./
-RUN npm ci --only=production
+RUN npm ci
 
 # Copy source code and build
 COPY . .
@@ -20,18 +20,18 @@ COPY --from=build /app/dist /usr/share/nginx/html
 # Copy nginx configuration
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Create non-root user
-RUN addgroup -g 1001 -S nodejs \
-    && adduser -S nextjs -u 1001
-
-# Change ownership of nginx directories
-RUN chown -R nextjs:nodejs /var/cache/nginx \
-    && chown -R nextjs:nodejs /var/log/nginx \
-    && chown -R nextjs:nodejs /etc/nginx/conf.d \
-    && touch /var/run/nginx.pid \
-    && chown -R nextjs:nodejs /var/run/nginx.pid
-
-USER nextjs
+# Configure for OpenShift compatibility
+RUN chgrp -R 0 /usr/share/nginx/html && \
+    chmod -R g=u /usr/share/nginx/html && \
+    chgrp -R 0 /var/cache/nginx && \
+    chmod -R g=u /var/cache/nginx && \
+    chgrp -R 0 /var/log/nginx && \
+    chmod -R g=u /var/log/nginx && \
+    chgrp -R 0 /etc/nginx/conf.d && \
+    chmod -R g=u /etc/nginx/conf.d && \
+    touch /var/run/nginx.pid && \
+    chgrp 0 /var/run/nginx.pid && \
+    chmod g=u /var/run/nginx.pid
 
 EXPOSE 3000
 

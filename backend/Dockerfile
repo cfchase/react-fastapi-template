@@ -14,10 +14,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY . .
 
-# Create non-root user
-RUN useradd --create-home --shell /bin/bash app \
-    && chown -R app:app /app
-USER app
+# Set permissions for OpenShift compatibility
+RUN chgrp -R 0 /app && \
+    chmod -R g=u /app
 
 # Expose port
 EXPOSE 8000

@@ -1,6 +1,11 @@
 # React FastAPI Template Makefile
 
-.PHONY: help setup dev build test clean docker-build docker-up docker-down docker-logs deploy-dev deploy-prod
+# Container Registry Operations
+REGISTRY ?= quay.io/cfchase
+TAG ?= latest
+
+
+.PHONY: help setup dev build test clean push deploy-dev deploy-prod undeploy-dev undeploy-prod
 
 # Default target
 help: ## Show this help message
@@ -34,11 +39,12 @@ dev-backend: ## Run backend development server
 	cd backend && python -m uvicorn main:app --reload --host 0.0.0.0 --port 8000
 
 # Building
-build: ## Build frontend for production
-	cd frontend && npm run build
-
 build-frontend: ## Build frontend for production
 	cd frontend && npm run build
+
+build: build-frontend ## Build frontend and container images
+	@echo "Building container images for $(REGISTRY) with tag $(TAG)..."
+	./scripts/build-images.sh $(TAG) $(REGISTRY)
 
 # Testing
 test: ## Run tests
@@ -50,32 +56,9 @@ test-frontend: ## Run frontend tests
 lint: ## Run linting on frontend
 	cd frontend && npm run lint
 
-# Docker Operations
-docker-build: ## Build Docker containers
-	docker-compose build
-
-docker-up: ## Start all services with Docker
-	docker-compose up -d
-
-docker-down: ## Stop all Docker services
-	docker-compose down
-
-docker-logs: ## View Docker container logs
-	docker-compose logs -f
-
-docker-clean: ## Clean up Docker containers and images
-	docker-compose down -v --rmi all
-	docker system prune -f
-
-# Container Registry Operations
-REGISTRY ?= quay.io/your-org
-TAG ?= latest
-
-build-images: ## Build container images for registry
-	@echo "Building images for $(REGISTRY) with tag $(TAG)..."
-	./scripts/build-and-push.sh $(TAG) $(REGISTRY)
-
-push-images: build-images ## Build and push images to registry
+push: ## Push container images to registry
+	@echo "Pushing images to $(REGISTRY) with tag $(TAG)..."
+	./scripts/push-images.sh $(TAG) $(REGISTRY)
 
 # OpenShift/Kubernetes Deployment
 kustomize-dev: ## Preview development deployment manifests
@@ -91,6 +74,14 @@ deploy-dev: ## Deploy to development environment
 deploy-prod: ## Deploy to production environment
 	@echo "Deploying to production..."
 	./scripts/deploy.sh prod
+
+undeploy-dev: ## Remove development deployment
+	@echo "Removing development deployment..."
+	kustomize build k8s/overlays/dev | oc delete -f - || true
+
+undeploy-prod: ## Remove production deployment
+	@echo "Removing production deployment..."
+	kustomize build k8s/overlays/prod | oc delete -f - || true
 
 # Environment Setup
 env-setup: ## Copy environment example files
@@ -115,7 +106,7 @@ clean: ## Clean build artifacts and dependencies
 	rm -rf backend/__pycache__
 	rm -rf backend/.pytest_cache
 
-clean-all: clean docker-clean ## Clean everything including Docker
+clean-all: clean ## Clean everything
 
 # Development Workflow
 fresh-start: clean setup env-setup ## Clean setup for new development
@@ -123,11 +114,3 @@ fresh-start: clean setup env-setup ## Clean setup for new development
 
 quick-start: setup env-setup dev ## Quick start for development
 
-# CI/CD Helpers
-ci-test: setup test lint ## Run CI tests
-
-ci-build: setup build ## Run CI build
-
-ci-deploy-dev: build-images deploy-dev ## CI deployment to dev
-
-ci-deploy-prod: build-images deploy-prod ## CI deployment to prod

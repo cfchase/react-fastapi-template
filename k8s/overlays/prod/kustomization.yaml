@@ -21,7 +21,7 @@ replicas:
     count: 2
 
 images:
-  - name: quay.io/your-org/react-fastapi-backend
+  - name: quay.io/cfchase/react-fastapi-backend
     newTag: v1.0.0
-  - name: quay.io/your-org/react-fastapi-frontend
+  - name: quay.io/cfchase/react-fastapi-frontend
     newTag: v1.0.0
