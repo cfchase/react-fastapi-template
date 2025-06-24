@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 import os
+from app.api.router import router as api_router
 
 app = FastAPI(
     title="React FastAPI Template API",
@@ -18,13 +19,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Include API routes
+app.include_router(api_router, prefix="/api")
+
 @app.get("/")
 async def root():
     return {"message": "React FastAPI Template API"}
-
-@app.get("/api/health")
-async def health_check():
-    return {"status": "healthy", "message": "Backend is running"}
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 8000))

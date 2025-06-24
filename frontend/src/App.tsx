@@ -17,7 +17,7 @@ function App() {
     setError(null)
     
     try {
-      const response = await axios.get<HealthResponse>('/api/health')
+      const response = await axios.get<HealthResponse>('/api/v1/utils/health-check')
       setHealthStatus(response.data)
     } catch (err) {
       setError('Failed to connect to backend')
