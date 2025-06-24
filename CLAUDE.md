@@ -49,10 +49,10 @@ make lint             # Run linting
 ```bash
 make build                           # Build frontend and container images (default: latest)
 make push                            # Push images only (default: latest)
+make build-prod                      # Build with prod tag (for production deployment)
+make push-prod                       # Push with prod tag
 make build TAG=latest                # Build with latest tag (explicit)
 make push TAG=latest                 # Push with latest tag (explicit)
-make build TAG=prod                  # Build with prod tag (required for prod deployment)
-make push TAG=prod                   # Push with prod tag
 make TAG=v1.0.0 REGISTRY=quay.io/cfchase # Custom registry and tag
 ```
 
@@ -64,14 +64,14 @@ make TAG=v1.0.0 REGISTRY=quay.io/cfchase # Custom registry and tag
 ```bash
 # First build and push images with correct tags
 make build && make push                     # For development (uses latest tag)
-make build TAG=prod && make push TAG=prod  # For production
+make build-prod && make push-prod           # For production
 
 # Then deploy
-make deploy-dev       # Deploy to development
+make deploy           # Deploy to development
 make deploy-prod      # Deploy to production
-make undeploy-dev     # Remove development deployment
+make undeploy         # Remove development deployment
 make undeploy-prod    # Remove production deployment
-make kustomize-dev    # Preview dev manifests
+make kustomize        # Preview dev manifests
 make kustomize-prod   # Preview prod manifests
 ```
 
@@ -123,7 +123,7 @@ The FastAPI backend provides:
 2. Test locally with `make dev`
 3. Build everything with `make build`
 4. Build and push containers with `make build && make push`
-5. Deploy to OpenShift with `make deploy-dev` or `make deploy-prod`
+5. Deploy to OpenShift with `make deploy` or `make deploy-prod`
 
 ## Common Tasks
 

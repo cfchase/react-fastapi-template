@@ -87,8 +87,8 @@ Build and push to quay.io:
 # Build frontend and container images (default tag: latest)
 make build
 
-# Build with specific tag for production environment
-make build TAG=prod
+# Build for production environment (uses prod tag)
+make build-prod
 
 # Build with specific tag and registry
 make build TAG=v1.0.0 REGISTRY=quay.io/cfchase
@@ -101,8 +101,8 @@ make build
 make push
 
 # Build and push for production deployment
-make build TAG=prod
-make push TAG=prod
+make build-prod
+make push-prod
 
 # Alternative script usage (defaults to latest tag)
 ./scripts/build-images.sh
@@ -133,8 +133,8 @@ Make sure to build and push with the correct tag before deploying.
    make push
    
    # For production
-   make build TAG=prod
-   make push TAG=prod
+   make build-prod
+   make push-prod
    ```
 
 3. **Deploy to development**:
@@ -151,13 +151,13 @@ Make sure to build and push with the correct tag before deploying.
 
 5. **Preview deployments**:
    ```bash
-   make kustomize-dev   # Preview dev manifests
+   make kustomize       # Preview dev manifests
    make kustomize-prod  # Preview prod manifests
    ```
 
-5. **Remove deployments**:
+6. **Remove deployments**:
    ```bash
-   make undeploy-dev    # Remove development deployment
+   make undeploy        # Remove development deployment
    make undeploy-prod   # Remove production deployment
    ```
 

@@ -5,7 +5,7 @@ REGISTRY ?= quay.io/cfchase
 TAG ?= latest
 
 
-.PHONY: help setup dev build test clean push deploy-dev deploy-prod undeploy-dev undeploy-prod
+.PHONY: help setup dev build build-prod test clean push push-prod deploy deploy-prod undeploy undeploy-prod kustomize kustomize-prod
 
 # Default target
 help: ## Show this help message
@@ -46,6 +46,10 @@ build: build-frontend ## Build frontend and container images
 	@echo "Building container images for $(REGISTRY) with tag $(TAG)..."
 	./scripts/build-images.sh $(TAG) $(REGISTRY)
 
+build-prod: build-frontend ## Build frontend and container images for production
+	@echo "Building container images for $(REGISTRY) with tag prod..."
+	./scripts/build-images.sh prod $(REGISTRY)
+
 # Testing
 test: ## Run tests
 	cd frontend && npm run test
@@ -60,14 +64,18 @@ push: ## Push container images to registry
 	@echo "Pushing images to $(REGISTRY) with tag $(TAG)..."
 	./scripts/push-images.sh $(TAG) $(REGISTRY)
 
+push-prod: ## Push container images to registry with prod tag
+	@echo "Pushing images to $(REGISTRY) with tag prod..."
+	./scripts/push-images.sh prod $(REGISTRY)
+
 # OpenShift/Kubernetes Deployment
-kustomize-dev: ## Preview development deployment manifests
+kustomize: ## Preview development deployment manifests
 	kustomize build k8s/overlays/dev
 
 kustomize-prod: ## Preview production deployment manifests
 	kustomize build k8s/overlays/prod
 
-deploy-dev: ## Deploy to development environment
+deploy: ## Deploy to development environment
 	@echo "Deploying to development..."
 	./scripts/deploy.sh dev
 
@@ -75,7 +83,7 @@ deploy-prod: ## Deploy to production environment
 	@echo "Deploying to production..."
 	./scripts/deploy.sh prod
 
-undeploy-dev: ## Remove development deployment
+undeploy: ## Remove development deployment
 	@echo "Removing development deployment..."
 	./scripts/undeploy.sh dev
 
